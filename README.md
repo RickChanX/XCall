@@ -1,5 +1,6 @@
 # XCall
-Call Clarity contract arbitrarily without writting code
+Call Clarity contract arbitrarily without writting code.
+Visit https://xcall.top.
 
 
 # Commands
