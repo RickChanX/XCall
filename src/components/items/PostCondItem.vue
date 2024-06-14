@@ -16,7 +16,7 @@
           <el-select size="small" v-model="condList[index-1].condType" placeholder="Select type" @change="onChangeCondType(index-1)">
             <el-option v-for="item in postCondTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
-          <el-button type="info" icon="el-icon-delete" size="small" circle @click="onClickDelete(index-1)"></el-button>
+          <el-button type="info" size="small" circle @click="onClickDelete(index-1)">X</el-button>
         </legend>
         <!-- STX -->
         <div v-if='condList[index-1].condType=="STX"'>

@@ -1,6 +1,6 @@
 # XCall
 Call Clarity contract arbitrarily without writting code.
-Visit https://xcall.top.
+Visit [xcall.top](https://xcall.top).
 
 
 # Commands
