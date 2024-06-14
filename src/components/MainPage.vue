@@ -28,8 +28,8 @@
       <!-- Variables -->
       <el-tab-pane label="Variables" v-if="varList.length > 0" name="variables">
         <div style="margin-bottom: 8px;">
-          <el-button type="primary" plain style='display:inline-block' size="small" @click="onClickLoadAllVar">Load all</el-button>
-          <el-button type="info" plain style='display:inline-block' size="small" @click="onClickCollapseAll(varDatas.activeIndexList)">Collapse all</el-button>
+          <el-button type="primary" plain style='display:inline-block' @click="onClickLoadAllVar">Load all</el-button>
+          <el-button type="info" plain style='display:inline-block' @click="onClickCollapseAll(varDatas.activeIndexList)">Collapse all</el-button>
         </div>
         <el-collapse v-model="varDatas.activeIndexList" @change="handleChangeVarCollapse" class="tabCollapse">
           <el-collapse-item v-for="index of varList.length" :key="index-1" :name="index-1">
@@ -49,7 +49,7 @@
       <!-- Maps -->
       <el-tab-pane label="Maps" v-if="mapList.length > 0" name="maps">
         <div style="margin-bottom: 8px;">
-          <el-button type="info" plain style='display: inline-block' size="small" @click="onClickCollapseAll(mapDatas.activeIndexList)">Collapse all</el-button>
+          <el-button type="info" plain style='display: inline-block' @click="onClickCollapseAll(mapDatas.activeIndexList)">Collapse all</el-button>
         </div>
         <el-collapse v-model="mapDatas.activeIndexList" style="max-width: 660px;">
           <el-collapse-item v-for="index of mapList.length" :key="index-1" :name="index-1">
@@ -60,7 +60,7 @@
             =>
             <span class="typeTip">{{ mapList[index-1].unifyValueType }}</span>
             <ASTItem :ref='"map" + (index-1)' :varAstType="mapList[index-1].keyAstType"></ASTItem>
-            <el-button class="queryBtn" type="primary" size="small" plain @click="onClickQueryMap(index-1)">Query</el-button>
+            <el-button class="queryBtn" type="primary" plain @click="onClickQueryMap(index-1)">Query</el-button>
             <div class="queryResult" v-loading='mapDatas.queryResult[index-1]=="\t"' v-if='mapDatas.queryResult[index-1] != null'>{{ mapDatas.queryResult[index-1] }}</div>
           </el-collapse-item>
         </el-collapse>
@@ -69,7 +69,7 @@
       <!-- Read-only functions -->
       <el-tab-pane label="Read" v-if="readFuncList.length > 0" name="read">
         <div style="margin-bottom: 8px;">
-          <el-button type="info" plain style='display:inline-block' size="small" @click="onClickCollapseAll(readFuncDatas.activeIndexList)">Collapse all</el-button>
+          <el-button type="info" plain style='display:inline-block' @click="onClickCollapseAll(readFuncDatas.activeIndexList)">Collapse all</el-button>
         </div>
         <el-collapse v-if="readFuncList.length > 0" v-model="readFuncDatas.activeIndexList" class="tabCollapse">
           <el-collapse-item v-for="index of readFuncList.length" :key="index-1" :name="index-1">
@@ -80,7 +80,7 @@
             =>
             <span class="typeTip">{{ readFuncList[index-1].resultType }}</span> -->
             <ArgsItem :ref='"readfunc" + (index-1)' :argList="readFuncList[index-1].argAstList"></ArgsItem>
-            <el-button type="primary" class="queryBtn" size="small" plain @click="onClickCallReadonly(index-1)">Query</el-button>
+            <el-button type="primary" class="queryBtn" plain @click="onClickCallReadonly(index-1)">Query</el-button>
             <div class="queryResult" v-loading="readFuncDatas.queryResult[index-1]=='\t'" v-if='readFuncDatas.queryResult[index-1] != null'>{{ readFuncDatas.queryResult[index-1] }}</div>
           </el-collapse-item>
         </el-collapse>
@@ -90,8 +90,8 @@
       <el-tab-pane label="Write" v-if="writeFuncList.length > 0" name="write">
         <el-alert effect="dark" title="The sign-in account should match the selected network and wallet's network." type="info" style="width:660px"></el-alert>
         <div style="margin-top: 8px; margin-bottom: 8px;">
-          <el-button v-if="bNeedSignIn" type="primary" size="small" @click="onClickLoginIn">Sign in</el-button>
-          <el-button type="info" plain style='display:inline-block' size="small" @click="onClickCollapseAll(writeFuncDatas.activeIndexList)">Collapse all</el-button>
+          <el-button v-if="bNeedSignIn" type="primary" @click="onClickLoginIn">Sign in</el-button>
+          <el-button type="info" plain style='display:inline-block' @click="onClickCollapseAll(writeFuncDatas.activeIndexList)">Collapse all</el-button>
         </div>
         <el-collapse v-model="writeFuncDatas.activeIndexList" class="tabCollapse">
           <el-collapse-item v-for="index of writeFuncList.length" :key="index-1" :name="index-1">
@@ -103,7 +103,7 @@
             <span class="typeTip">{{ writeFuncList[index-1].resultType }}</span> -->
             <ArgsItem :ref='"writefunc" + (index-1)' :argList="writeFuncList[index-1].argAstList"></ArgsItem>
             <PostCondItem :ref='"postCond" + (index-1)'></PostCondItem>
-            <el-button :disabled="bNeedSignIn" type="primary" size="small" plain @click="onClickCallPublic(index-1)">Call</el-button>
+            <el-button :disabled="bNeedSignIn" type="primary" plain @click="onClickCallPublic(index-1)">Call</el-button>
           </el-collapse-item>
         </el-collapse>
       </el-tab-pane>
@@ -475,13 +475,13 @@ export default {
 
     //////////////////////////////////////// Maps begin ////////////////////////////////////////
     async onClickQueryMap(index) {
-      Vue.set(this.mapDatas.queryResult, index, '\t')
+      this.mapDatas.queryResult[index] = '\t'
       //
       const mapInfo = this.mapList[index]
       let mapItem = this.$refs["map" + index][0]
       const [cv, errMsg] = mapItem.getCvValue()
       if (errMsg) {
-        Vue.set(this.mapDatas.queryResult, index, '')
+        this.mapDatas.queryResult[index] = ''
         this.$alert(errMsg, 'error', {
           confirmButtonText: 'Ok',
         })
@@ -501,13 +501,13 @@ export default {
         if (res.status == 200) {
           const rsp = await res.json()
           const result = this.parseCVValue(hexToCV(rsp.data), mapInfo.unifyValueType)
-          Vue.set(this.mapDatas.queryResult, index, result)
+          this.mapDatas.queryResult[index] = result
         } else {
-          Vue.set(this.mapDatas.queryResult, index, '')
+          this.mapDatas.queryResult[index] = ''
           Utils.tipErr(`error: fetch map entry ${mapInfo.name} error, status=${res.status}`)
         }
       } catch (err) {
-        Vue.set(this.mapDatas.queryResult, index, '')
+        this.mapDatas.queryResult[index] = ''
         Utils.tipErr('Request fail, check console log')
         console.error(`error: fetch map entry ${mapInfo.name} error:`, err)
       }
@@ -516,13 +516,13 @@ export default {
 
     //////////////////////////////////////// Read-only functions begin ////////////////////////////////////////
     async onClickCallReadonly(index) {
-      Vue.set(this.readFuncDatas.queryResult, index, '\t')
+      this.readFuncDatas.queryResult[index] = '\t'
       //
       const funcInfo = this.readFuncList[index]
       let argsItem = this.$refs["readfunc" + index][0]
       const [argList, errMsg] = argsItem.getArgList()
       if (errMsg) {
-        Vue.set(this.readFuncDatas.queryResult, index, '')
+        this.readFuncDatas.queryResult[index] = ''
         this.$alert(errMsg, 'error', {
           confirmButtonText: 'Ok',
         })
@@ -540,9 +540,9 @@ export default {
         const summaryRsp = await callReadOnlyFunction(options)
         // console.log('___summaryRsp: ', summaryRsp)
         const result = this.parseCVValue(summaryRsp, funcInfo.resultType)
-        Vue.set(this.readFuncDatas.queryResult, index, result)
+        this.readFuncDatas.queryResult[index] = result
       } catch (err) {
-        Vue.set(this.readFuncDatas.queryResult, index, '')
+        this.readFuncDatas.queryResult[index] = ''
         Utils.tipErr('Request fail, check console log')
         console.error(`error: call read-only function ${funcInfo.name} fail, error:`, err)
       }
@@ -740,7 +740,7 @@ export default {
   margin-top: 10px;
   min-height: 25px;
   word-break: break-word;
-  font-size: 13px;
+  font-size: 15px;
   margin-bottom: -10px;
   padding-right: 4px;
 }
@@ -748,8 +748,8 @@ export default {
   max-width: 660px;
 }
 .typeTip {
-  font-style: italic;
-  color: #6c757d;
+  color: #666;
+  font-size: 14px;
 }
 .queryBtn {
   margin-top: 2px;

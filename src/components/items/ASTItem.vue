@@ -5,7 +5,7 @@
     </legend>
     <!-- Atom -->
     <div v-if='isAtom'>
-      <el-input style="max-width: 500px;" size="small" clearable :placeholder="varAstType" v-model="inputValue"></el-input>
+      <el-input style="max-width: 500px;" clearable :placeholder="varAstType" v-model="inputValue"></el-input>
     </div>
     <!-- Optional -->
     <div v-else-if='isOptional'>
@@ -24,11 +24,11 @@
         </div>
       </div>
       <div class="listBtns">
-        <el-button type="primary" plain size="small"  @click="onClickAdd(1)">Add list item</el-button>
-        <el-button :disabled="listCount<=0" type="primary" plain size="small"  @click="onClickAdd(-1)">Remove last</el-button>
-        <!-- <el-button type="primary" plain size="small"  @click="onClickBulkAdd()">Add by split</el-button> -->
-        <!-- <el-button type="info" plain size="small"  @click="onClickRemoveEmpty">Remove empty</el-button> -->
-        <el-button type="info" plain size="small"  @click="onClickRemoveAll">Remove all</el-button>
+        <el-button type="primary" plain  @click="onClickAdd(1)">Add list item</el-button>
+        <el-button :disabled="listCount<=0" type="primary" plain  @click="onClickAdd(-1)">Remove last</el-button>
+        <!-- <el-button type="primary" plain  @click="onClickBulkAdd()">Add by split</el-button> -->
+        <!-- <el-button type="info" plain  @click="onClickRemoveEmpty">Remove empty</el-button> -->
+        <el-button type="info" plain  @click="onClickRemoveAll">Remove all</el-button>
       </div>
     </div>
     <!-- Tuple -->
