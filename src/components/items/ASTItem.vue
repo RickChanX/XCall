@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="listBtns">
-        <el-button type="primary" plain  @click="onClickAdd(1)">Add list item</el-button>
+        <el-button :disabled="listCount>=varAstType.maxCount" type="primary" plain @click="onClickAdd(1)">Add list item</el-button>
         <el-button :disabled="listCount<=0" type="primary" plain  @click="onClickAdd(-1)">Remove last</el-button>
         <!-- <el-button type="primary" plain  @click="onClickBulkAdd()">Add by split</el-button> -->
         <!-- <el-button type="info" plain  @click="onClickRemoveEmpty">Remove empty</el-button> -->
@@ -56,7 +56,7 @@ export default {
       let errMsg = null
       if (this.isAtom) {
         try {
-          if (content.length == 0 && this.varAstType.indexOf('buffer ') == -1 && this.varAstType.indexOf('string') == -1) {
+          if (content.length == 0 && this.varAstType.indexOf('buff ') == -1 && this.varAstType.indexOf('string') == -1) {
             errMsg = 'Please input value'
           } else if (this.varAstType == 'int') {
             resultCv = intCV(content)
@@ -86,7 +86,7 @@ export default {
             } else if (parts.length == 2) {
               resultCv = contractPrincipalCV(parts[0], parts[1])
             }
-          } else if (this.varAstType.indexOf('buffer ') != -1) {
+          } else if (this.varAstType.indexOf('buff ') != -1) {
             const startIndex = this.varAstType.indexOf(' ')
             const endIndex = this.varAstType.indexOf(')')
             if (startIndex != -1 && endIndex != -1) {
@@ -94,7 +94,11 @@ export default {
               const maxLen = parseInt(maxLenStr)
               const realContent = content.substr(0, 2) == '0x' ? content.substr(2) : content
               if (realContent.length <= 2 * maxLen) {
-                resultCv = bufferCV(Buffer.from(realContent, 'hex'))
+                if (realContent.length % 2 == 0) {
+                  resultCv = bufferCV(Buffer.from(realContent, 'hex'))
+                } else {
+                  errMsg = `err: ${content} invalid(length should be even)`  
+                }
               } else {
                 errMsg = `err: ${content} too long(exceed ${maxLen})`
               }

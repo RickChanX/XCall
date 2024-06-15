@@ -11,12 +11,6 @@
         </a>
       </div>
     </div>
-
-   <!-- <el-space alignment="center" id="title">
-      <img id='logo' src="./assets/icon.png" />
-      XCall
-      
-    </el-space> -->
     <router-view/>
   </div>
 </template>

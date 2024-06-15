@@ -88,7 +88,7 @@
 
       <!-- Public functions -->
       <el-tab-pane label="Write" v-if="writeFuncList.length > 0" name="write">
-        <el-alert effect="dark" title="The sign-in account should match the selected network and wallet's network." type="info" style="width:660px"></el-alert>
+        <el-alert effect="dark" title="The sign-in account should match the account in wallet app." type="info" style="width:660px"></el-alert>
         <div style="margin-top: 8px; margin-bottom: 8px;">
           <el-button v-if="bNeedSignIn" type="primary" @click="onClickLoginIn">Sign in</el-button>
           <el-button type="info" plain style='display:inline-block' @click="onClickCollapseAll(writeFuncDatas.activeIndexList)">Collapse all</el-button>
@@ -312,7 +312,6 @@ export default {
         }
       }
       ///
-      console.log('___this.readFuncList', this.readFuncList)
       if (this.readFuncList.length > 0) {
         this.curTab = 'read'
       } else if (this.varList.length > 0) {
@@ -607,7 +606,7 @@ export default {
           return `(list ${typeV.list.length} ${innerTypeV})`
         }
         if (typeV['buffer']) {
-          return `(buffer ${typeV.buffer.length})`
+          return `(buff ${typeV.buffer.length})`
         }
         if (typeV['string-ascii']) {
           return `(string-ascii ${typeV['string-ascii'].length})`
@@ -656,7 +655,7 @@ export default {
           }
         }
         if (typeV['buffer']) {
-          return `(buffer ${typeV.buffer.length})`
+          return `(buff ${typeV.buffer.length})`
         }
         if (typeV['string-ascii']) {
           return `(string-ascii ${typeV['string-ascii'].length})`
