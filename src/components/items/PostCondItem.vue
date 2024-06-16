@@ -297,12 +297,12 @@ export default {
       ],
       nftCmdTypeList: [
         {
-          value: NonFungibleConditionCode.Owns,
-          label: 'Owns'
+          value: NonFungibleConditionCode.Sends,
+          label: 'Sends'
         },
         {
-          value: NonFungibleConditionCode.DoesNotOwn,
-          label: 'DoesNotOwn'
+          value: NonFungibleConditionCode.DoesNotSend,
+          label: 'DoesNotSend'
         },
       ],
       condMode: PostConditionMode.Deny.toString(),
