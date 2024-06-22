@@ -21,6 +21,7 @@
         <span>Contract:</span>
         <el-input size="large" style="width: 625px" clearable placeholder="Contract address" v-model="curContractAddr"></el-input>
         <el-button size="large" type="primary" :disabled="curContractAddr.trim().length==0" @click="onClickLoadContract">Load</el-button>
+        <el-button size="large" type="primary" plain @click="onClickHistory">History</el-button>
       </el-space>
     </el-space>
 
@@ -108,6 +109,31 @@
         </el-collapse>
       </el-tab-pane>
     </el-tabs>
+
+    <el-drawer size='700' v-model="historyDatas.bVisible" title="History" direction="rtl">
+      <el-table
+        :data="historyDatas.tableData"
+        highlight-current-row
+        @current-change="onClickSelectContract"
+      >
+        <!-- <el-table-column type="index" width="50" /> -->
+        <el-table-column label="Contract name" width="180">
+          <template #default="scope">
+            <div>{{ scope.row.name }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="Contract address" width="400">
+          <template #default="scope">
+            <div>{{ scope.row.address }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="Chain">
+          <template #default="scope">
+            <div>{{ scope.row.netType }}</div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-drawer>    
   </div>
 </template>
 
@@ -177,6 +203,17 @@ export default {
         [ClarityType.StringASCII]: true,
         [ClarityType.StringUTF8]: true,
       },
+      /// History
+      historyDatas: {
+        bVisible: false,
+        tableData: [
+          // {
+          //   netType: 'mainnet',
+          //   address: 'SP2P97XC3QJBB9SAZQ4SFHXDVV3J48RWSCZY52RVD',
+          //   name: 'xcall',
+          // },
+        ]
+      },
     }
   },
   async mounted() {
@@ -185,6 +222,7 @@ export default {
     this.updateNetwork()
     const prefContract = localStorage.getItem('contract')
     this.curContractAddr = prefContract ? prefContract : ''
+    this.loadHistoryData()
   },
   computed: {
     bNeedSignIn() {
@@ -248,7 +286,6 @@ export default {
         Utils.tipErr('Invalid contract address')
         return
       }
-      localStorage.setItem('contract', this.curContractAddr)
       let loading = this.createLoading('Loading')
       let [contractAddr, contractName] = this.curContractAddr.split('.')
       this.curContractPair.push(contractAddr, contractName)
@@ -256,6 +293,8 @@ export default {
         const res = await fetch(`${this.coreApiUrl}/v2/contracts/interface/${contractAddr}/${contractName}`)
         loading.close()
         if (res.status == 200) {
+          localStorage.setItem('contract', this.curContractAddr)
+          this.saveHistoryContracts()
           this.state = 2
           this.queryContractABIFinish(await res.json())
         } else {
@@ -324,6 +363,51 @@ export default {
         this.curTab = 'source'
       }
     },
+    //////////////////////////////////////// History begin ////////////////////////////////////////
+    onClickHistory() {
+      this.historyDatas.bVisible = true
+    },
+    onClickSelectContract(val) {
+      this.historyDatas.bVisible = false
+      if (val && val.netType && val.address && val.name) {
+        if (this.netType != val.netType) {
+          this.netType = val.netType
+          this.onChangeNetwork()
+        }
+        this.curContractAddr = `${val.address}.${val.name}`
+        this.onClickLoadContract()
+      }
+    },
+    loadHistoryData() {
+      this.historyDatas.tableData.splice(0, this.historyDatas.tableData.length)
+      const historyContracts = localStorage.getItem('historyContracts')
+      if (historyContracts) {
+        const arr = JSON.parse(historyContracts)
+        if (arr) {
+          this.historyDatas.tableData.push(...arr)
+        }
+      }
+    },
+    saveHistoryContracts() {
+      let arr = []
+      arr.push({
+        netType: this.netType,
+        address: this.curContractPair[0],
+        name: this.curContractPair[1],
+      })
+      for (const v of this.historyDatas.tableData) {
+        if (v.address != this.curContractPair[0] || v.name != this.curContractPair[1]) {
+          arr.push(v)
+          if (arr.length >= 15) {
+            break
+          }
+        }
+      }
+      this.historyDatas.tableData.splice(0, this.historyDatas.tableData.length)
+      this.historyDatas.tableData.push(...arr)
+      localStorage.setItem('historyContracts', JSON.stringify(this.historyDatas.tableData))
+    },
+    //////////////////////////////////////// History end ////////////////////////////////////////
     //////////////////////////////////////// Variables begin ////////////////////////////////////////
     resetFetchAllVarInfo() {
       this.varDatas.activeIndexList.splice(0, this.varDatas.activeIndexList.length)
@@ -469,7 +553,7 @@ export default {
         console.log('parse value err: ', err)
         return 'parse error'
       }
-    },
+    },    
     //////////////////////////////////////// Variables end ////////////////////////////////////////
 
     //////////////////////////////////////// Maps begin ////////////////////////////////////////
